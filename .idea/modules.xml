@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Captcha Breaker.iml" filepath="$PROJECT_DIR$/.idea/Captcha Breaker.iml" />
       <module fileurl="file://$PROJECT_DIR$/../Desenvolvimento controle financeiro/.idea/Desenvolvimento controle financeiro.iml" filepath="$PROJECT_DIR$/../Desenvolvimento controle financeiro/.idea/Desenvolvimento controle financeiro.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Santa Fe Artificial Stock Market.iml" filepath="$PROJECT_DIR$/.idea/Santa Fe Artificial Stock Market.iml" />
     </modules>
   </component>
 </project>

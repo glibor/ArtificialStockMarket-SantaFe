@@ -1,37 +1,7 @@
+import datetime
+
 import numpy as np
 import pandas as pd
-
-
-class Investor:
-    """
-    Agente investidor do modelo Santa Fe Institute - Artificial Stock Market.
-    Referência capítulo 6 de "Agent-Based Modeling The Santa Fe Institute Artificial Stock Market Model Revisited"
-    """
-
-    def __init__(self, rules):
-        """
-        :param rules: lista de 100 objetos 'Rule', regras de decisão iniciais
-        """
-        self.stock_qty = 1
-        self._risk_aversion_coef = 0.5
-        self.tranding_rules = rules
-
-    def stock_demand(self, current_price, expected_price, stock_variance, risk_free):
-        opt_qty = (expected_price - current_price * (1 + risk_free)) / (self._risk_aversion_coef * stock_variance)
-        return opt_qty - self.stock_qty
-
-
-class Rule:
-    """
-    Regra de decisão baseada na estrutura de informações sobre o mercado
-    """
-
-    def __init__(self):
-        self._alpha = 0
-        self._beta = 0
-
-    def forecast(self, p_d):
-        return self._alpha * p_d + self._beta
 
 
 def ratio_greater_than(k):
@@ -50,7 +20,8 @@ def xyz_ratio_greater_than(k):
 
 class MarketInfo:
     """
-    Conjunto de dados que serão avaliados. Seguindo nossa referência, teremos 64 elementos de informação de mercado.
+    Classe que implementa as informações de mercado em geral, incluindo as séries de preço.
+    Seguindo nossa referência, teremos 64 elementos de informação de mercado.
     """
 
     def __init__(self, initial_price_df=None):
@@ -102,7 +73,6 @@ class MarketInfo:
         # Cria as regras 54 a 63 (technical conditions) - verifica media movel preco é maior que outras média móveis
         # preco
 
-
     def update_info_state(self):
         for n, f in enumerate(self.rule_set):
             if n <= 5:
@@ -114,7 +84,8 @@ class MarketInfo:
                 self.current_state[n] = f(
                     self.price_history.price.tail(1) * self.risk_free / self.price_history.dividend.tail(1))
             elif n <= 25:
-                self.current_state[n] = f(self.price_history.price.iloc[-n + 20] - self.price_history.price.iloc[-n + 21])
+                self.current_state[n] = f(
+                    self.price_history.price.iloc[-n + 20] - self.price_history.price.iloc[-n + 21])
             elif n <= 29:
                 self.current_state[n] = f(
                     self.price_history.dividend.iloc[-n + 25] - self.price_history.dividend.iloc[-n + 26])
@@ -130,24 +101,33 @@ class MarketInfo:
                 pass
             else:
                 pass
-        self.current_state[30] = (self.price_history.price.iloc[-5:].mean() > self.price_history.price.iloc[-6:-1].mean())
-        self.current_state[31] = (self.price_history.price.iloc[-10:].mean() > self.price_history.price.iloc[-11:-1].mean())
-        self.current_state[32] = (self.price_history.price.iloc[-20:].mean() > self.price_history.price.iloc[-21:-1].mean())
-        self.current_state[33] = (self.price_history.price.iloc[-100:].mean() > self.price_history.price.iloc[-101:-1].mean())
-        self.current_state[34] = (self.price_history.price.iloc[-500:].mean() > self.price_history.price.iloc[-501:-1].mean())
-        self.current_state[35] = (self.price_history.dividend.iloc[-5:].mean() > self.price_history.price.iloc[-6:-1].mean())
-        self.current_state[36] = (self.price_history.dividend.iloc[-10:].mean() > self.price_history.dividend.iloc[-11:-1].mean())
-        self.current_state[37] = (self.price_history.dividend.iloc[-100:].mean() > self.price_history.dividend.iloc[-101:-1].mean())
-        self.current_state[38] = (self.price_history.dividend.iloc[-500:].mean() > self.price_history.dividend.iloc[-501:-1].mean())
+        self.current_state[30] = (
+                self.price_history.price.iloc[-5:].mean() > self.price_history.price.iloc[-6:-1].mean())
+        self.current_state[31] = (
+                self.price_history.price.iloc[-10:].mean() > self.price_history.price.iloc[-11:-1].mean())
+        self.current_state[32] = (
+                self.price_history.price.iloc[-20:].mean() > self.price_history.price.iloc[-21:-1].mean())
+        self.current_state[33] = (
+                self.price_history.price.iloc[-100:].mean() > self.price_history.price.iloc[-101:-1].mean())
+        self.current_state[34] = (
+                self.price_history.price.iloc[-500:].mean() > self.price_history.price.iloc[-501:-1].mean())
+        self.current_state[35] = (
+                self.price_history.dividend.iloc[-5:].mean() > self.price_history.price.iloc[-6:-1].mean())
+        self.current_state[36] = (
+                self.price_history.dividend.iloc[-10:].mean() > self.price_history.dividend.iloc[-11:-1].mean())
+        self.current_state[37] = (
+                self.price_history.dividend.iloc[-100:].mean() > self.price_history.dividend.iloc[-101:-1].mean())
+        self.current_state[38] = (
+                self.price_history.dividend.iloc[-500:].mean() > self.price_history.dividend.iloc[-501:-1].mean())
         self.current_state[39] = (self.price_history.price.iloc[-1:] > self.price_history.price.iloc[-5:].mean())
         self.current_state[40] = (
-                    self.price_history.price.iloc[-1:] > self.price_history.price.iloc[-10:].mean())
+                self.price_history.price.iloc[-1:] > self.price_history.price.iloc[-10:].mean())
         self.current_state[41] = (
-                    self.price_history.price.iloc[-1:] > self.price_history.price.iloc[-20:].mean())
+                self.price_history.price.iloc[-1:] > self.price_history.price.iloc[-20:].mean())
         self.current_state[42] = (
-                    self.price_history.price.iloc[-1:] > self.price_history.price.iloc[-100:].mean())
+                self.price_history.price.iloc[-1:] > self.price_history.price.iloc[-100:].mean())
         self.current_state[43] = (
-                    self.price_history.price.iloc[-1:] > self.price_history.price.iloc[-500:].mean())
+                self.price_history.price.iloc[-1:] > self.price_history.price.iloc[-500:].mean())
         self.current_state[44] = (
                 self.price_history.dividend.iloc[-1:] > self.price_history.dividend.iloc[-5:].mean())
         self.current_state[45] = (
@@ -188,6 +168,16 @@ class MarketInfo:
                 self.price_history.price.iloc[-20:].mean() > self.price_history.price.iloc[-500:].mean())
         self.current_state[63] = (
                 self.price_history.price.iloc[-100:].mean() > self.price_history.price.iloc[-500:].mean())
+
+    def write_info(self, price, dividend, variation, volume):
+        pass
+
+
+class Stock:
+
+    def __init__(self, initial_price):
+        self.current_price = initial_price
+        self.current_dividend = 0
 
     def dividend_selector(self):
         pass
