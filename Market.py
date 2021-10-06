@@ -1,4 +1,5 @@
 import datetime
+import random
 
 import numpy as np
 import pandas as pd
@@ -24,8 +25,8 @@ class MarketInfo:
     Seguindo nossa referência, teremos 64 elementos de informação de mercado.
     """
 
-    def __init__(self, initial_price_df=None):
-        self.dividend_mean = 10
+    def __init__(self, dividend_mean, initial_price_df=None):
+        self.dividend_mean = dividend_mean
         self.revision_speed = 0.5
         self.dividend_error_var = 0.1
         self.risk_free = 0.05
@@ -169,15 +170,31 @@ class MarketInfo:
         self.current_state[63] = (
                 self.price_history.price.iloc[-100:].mean() > self.price_history.price.iloc[-500:].mean())
 
-    def write_info(self, price, dividend, variation, volume):
-        pass
+    def write_step(self, step, price, dividend, variation, volume):
+        df = {'step': step,
+              'price': price,
+              'dividend': dividend,
+              'variation': variation,
+              'volume': volume}
+        self.price_history.append(df, ignore_index=True)
 
 
 class Stock:
 
-    def __init__(self, initial_price):
+    def __init__(self, initial_price, initial_dividend, dividend_mean, revision_speed, dividend_error_var, reproduce=False):
+        self.dividend_mean = dividend_mean
         self.current_price = initial_price
-        self.current_dividend = 0
+        self.current_dividend = initial_dividend
+        self.revision_speed = revision_speed
+        self.dividend_error_var = dividend_error_var
+        self.reproduce = reproduce
 
-    def dividend_selector(self):
-        pass
+    def update_dividend(self):
+        if self.reproduce:
+            random.seed(0)
+        error = random.gauss(0, 4)
+        new_dividend = self.dividend_mean + self.revision_speed * (self.current_dividend - self.dividend_mean) + error
+        self.current_dividend = new_dividend
+
+    def update_price(self, price):
+        self.current_price = price
