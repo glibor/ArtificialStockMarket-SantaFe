@@ -80,7 +80,7 @@ class MinMax:
         self.maximos_globais = [i for i in maximos if self.f(i) >= f_max]
         self.minimos_globais = [i for i in minimos if self.f(i) <= f_min]
 
-    def _refine_extrema(self, n_refinos=5):
+    def refine_extrema(self, n_refinos=5):
 
         a, b, grid = self.a, self.b, self.grid
         maximos_refinados = []
@@ -133,8 +133,9 @@ class MinMax:
 
 
 if __name__ == "__main__":
-    f = lambda x: (x)**2
-    m = MinMax(f, -1, 2, 1000)
-    m_r = m._refine_extrema(5)
+    def func(x):
+        return (x)**2
+    m = MinMax(func, -1, 2, 1000)
+    m_r = m.refine_extrema(5)
     print(m)
     print(m_r)

@@ -1,0 +1,5 @@
+progressbar
+numpy>=1.18.2
+pandas>=1.0
+progressbar2==3.54.0
+

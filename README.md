@@ -1,2 +1,2 @@
-Essa é uma implementação em Python do modelo _Artificial_ _Stock_ _Market_ do _Santa_ _Fe_ _Institute_.
+Essa é uma implementação em Python do modelo _Artificial Stock Market_ do _Santa Fe Institute_.
 
